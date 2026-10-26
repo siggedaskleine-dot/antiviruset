@@ -4,12 +4,12 @@ Ett antivirusprogram för Windows 11 som söker efter virus och annan malware.
 
 ## Status
 
-Första delen är på plats: skannermotorn och ett kommandoradsprogram. Grafiskt gränssnitt, automatiska uppdateringar och installationsprogram kommer i nästa steg.
+Skannermotorn, kommandoradsprogrammet och det grafiska gränssnittet är på plats. Automatiska uppdateringar och installationsprogram kommer i nästa steg.
 
 | Steg | Innehåll | Status |
 | --- | --- | --- |
 | 1 | Skanner: hash-signaturer, YARA-regler, karantän | Klar |
-| 2 | Grafiskt gränssnitt (WPF) | Planerad |
+| 2 | Grafiskt gränssnitt (WPF) | Klar |
 | 3 | Automatisk uppdatering av signaturer och programmet | Planerad |
 | 4 | Installationsprogram och kodsignering | Planerad |
 
@@ -20,6 +20,16 @@ Första delen är på plats: skannermotorn och ett kommandoradsprogram. Grafiskt
 - **Karantän.** Hittade filer kan flyttas till karantän. Där sparas de kodade så att de inte kan köras av misstag, och de kan återställas eller raderas för gott.
 
 Inbyggda signaturer och regler finns i [`signatures/`](signatures) och [`rules/`](rules). Nedladdade uppdateringar läggs i `%ProgramData%\MattesAntivirus\Signatures` och `...\Rules`.
+
+## Programmet
+
+`MattesAntivirus.exe` har tre sidor:
+
+- **Översikt** visar om datorn är skyddad, när den senast skannades och hur många signaturer som är laddade. Härifrån startar du snabbskanning, fullständig skanning eller anpassad skanning av valda mappar.
+- **Skanning** visar förloppet medan skanningen pågår och listar hoten efteråt. Markera hoten och flytta dem till karantän med en knapp.
+- **Karantän** listar filer i karantän och låter dig återställa eller radera dem.
+
+Filer i skyddade mappar, som `C:\Program Files`, kan bara flyttas till karantän om programmet körs som administratör.
 
 ## Kommandoraden
 
@@ -51,6 +61,7 @@ YARA-motorn ([dnYara](https://github.com/airbus-cert/dnYara)) fungerar bara på 
 
 ## Projektets delar
 
-- `src/MattesAntivirus.Core` – skanner, detektionsmotorer och karantän. Används av både kommandoraden och det kommande gränssnittet.
+- `src/MattesAntivirus.Core` – skanner, detektionsmotorer och karantän. Används av både kommandoraden och det grafiska programmet.
+- `src/MattesAntivirus.App` – det grafiska programmet (WPF).
 - `src/MattesAntivirus.Cli` – kommandoradsprogrammet `mattes-av`.
 - `tests/MattesAntivirus.Core.Tests` – tester. De byggs och körs på Windows vid varje ändring via GitHub Actions.
