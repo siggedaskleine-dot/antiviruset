@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dnYara" Version="2.1.0" />
+    <PackageReference Include="dnYara.NativePack" Version="2.1.0.3" />
+  </ItemGroup>
+
+  <!-- Bundled signatures and rules are copied next to every program that uses the core library. -->
+  <ItemGroup>
+    <Content Include="..\..\signatures\**\*.txt" LinkBase="signatures" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\rules\**\*.yar" LinkBase="rules" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

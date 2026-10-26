@@ -1,0 +1,35 @@
+name: Bygg och testa
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Bygg
+        run: dotnet build --configuration Release
+
+      - name: Testa
+        run: dotnet test --configuration Release --no-build --logger "console;verbosity=normal"
+
+      - name: Paketera kommandoradsprogrammet
+        run: dotnet publish src/MattesAntivirus.Cli --configuration Release --runtime win-x64 --self-contained false --output publish
+
+      - name: Provkör
+        run: |
+          publish/mattes-av.exe info
+          publish/mattes-av.exe scan signatures rules
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mattes-av-win-x64
+          path: publish

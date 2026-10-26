@@ -1,0 +1,5 @@
+# Mattes Antivirus inbyggda signaturer
+# Format: sha256;Hotnamn  (rader som börjar med # ignoreras)
+#
+# EICAR är en ofarlig testfil som alla antivirusprogram känner igen: https://www.eicar.org/download-anti-malware-testfile/
+275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f;EICAR-Test-File
