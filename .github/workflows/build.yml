@@ -32,17 +32,31 @@ jobs:
       - name: Paketera programmet
         run: dotnet publish src/MattesAntivirus.App --configuration Release --runtime win-x64 --self-contained false --output publish-app
 
-      - name: Starta programmet och ta en skärmbild
+      - name: Starta programmet och kontrollera startsidan
         run: |
           $process = Start-Process -FilePath publish-app/MattesAntivirus.exe -PassThru
           Start-Sleep -Seconds 10
-          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          if ($process.HasExited) { throw "Programmet stängdes direkt (kod $($process.ExitCode))" }
+          $process.Refresh()
+
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing, UIAutomationClient, UIAutomationTypes
           $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
           $bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
           [System.Drawing.Graphics]::FromImage($bitmap).CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
           $bitmap.Save("screenshot.png")
-          if ($process.HasExited) { throw "Programmet stängdes direkt (kod $($process.ExitCode))" }
+
+          # List every text in the window so the log shows what the overview page displays.
+          $window = [System.Windows.Automation.AutomationElement]::FromHandle($process.MainWindowHandle)
+          $texts = $window.FindAll([System.Windows.Automation.TreeScope]::Descendants, [System.Windows.Automation.Condition]::TrueCondition) |
+            ForEach-Object { $_.Current.Name } | Where-Object { $_ } | Select-Object -Unique
+          Write-Host "Fönstertitel: $($process.MainWindowTitle)"
+          $texts | ForEach-Object { Write-Host "  $_" }
           Stop-Process -Id $process.Id
+
+          foreach ($expected in "Översikt", "Snabbskanning", "Fullständig skanning", "Anpassad skanning", "Karantän") {
+            if ($texts -notcontains $expected) { throw "Startsidan saknar texten '$expected'" }
+          }
+          if ($texts | Where-Object { $_ -like "*oväntat fel*" }) { throw "Programmet visade ett felmeddelande" }
 
       - uses: actions/upload-artifact@v4
         with:
