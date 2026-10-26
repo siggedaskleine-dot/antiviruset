@@ -29,7 +29,34 @@ jobs:
           publish/mattes-av.exe info
           publish/mattes-av.exe scan signatures rules
 
+      - name: Paketera programmet
+        run: dotnet publish src/MattesAntivirus.App --configuration Release --runtime win-x64 --self-contained false --output publish-app
+
+      - name: Starta programmet och ta en skärmbild
+        run: |
+          $process = Start-Process -FilePath publish-app/MattesAntivirus.exe -PassThru
+          Start-Sleep -Seconds 10
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bitmap = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+          [System.Drawing.Graphics]::FromImage($bitmap).CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+          $bitmap.Save("screenshot.png")
+          if ($process.HasExited) { throw "Programmet stängdes direkt (kod $($process.ExitCode))" }
+          Stop-Process -Id $process.Id
+
       - uses: actions/upload-artifact@v4
         with:
           name: mattes-av-win-x64
           path: publish
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mattes-antivirus-win-x64
+          path: publish-app
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: skarmbild
+          path: screenshot.png
+          if-no-files-found: ignore

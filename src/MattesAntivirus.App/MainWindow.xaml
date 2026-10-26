@@ -1,0 +1,226 @@
+<Window x:Class="MattesAntivirus.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:MattesAntivirus.App.ViewModels"
+        Title="Mattes Antivirus"
+        Icon="Assets/MattesAntivirus.ico"
+        Width="1040" Height="700" MinWidth="820" MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource WindowBrush}"
+        FontFamily="Segoe UI Variable Text, Segoe UI"
+        FontSize="14">
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Window.Resources>
+        <!-- Overview -->
+        <DataTemplate DataType="{x:Type vm:HomeViewModel}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="36,32" MaxWidth="900" HorizontalAlignment="Left">
+                    <TextBlock Text="Översikt" Style="{StaticResource PageTitle}" />
+
+                    <Border Style="{StaticResource Card}" Padding="24">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Width="64" Height="70" Margin="0,0,24,0" VerticalAlignment="Center">
+                                <Path x:Name="Shield" Data="{StaticResource ShieldGeometry}" Stretch="Uniform" Fill="{StaticResource OkBrush}" />
+                                <TextBlock x:Name="ShieldIcon" Text="&#xE73E;" FontFamily="{StaticResource IconFont}" FontSize="26"
+                                           Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-4,0,0" />
+                            </Grid>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding StatusTitle}" FontSize="22" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding StatusDetail}" Style="{StaticResource SubtleText}" Margin="0,4,0,0" />
+                                <TextBlock Text="{Binding LastScanText}" Style="{StaticResource SubtleText}" Margin="0,10,0,0" FontSize="12" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <TextBlock Text="Skanna datorn" Style="{StaticResource SectionTitle}" />
+                    <WrapPanel>
+                        <Button Style="{StaticResource TileButton}" Command="{Binding QuickScanCommand}">
+                            <StackPanel>
+                                <TextBlock Text="&#xE945;" FontFamily="{StaticResource IconFont}" FontSize="22" Foreground="{StaticResource AccentBrush}" />
+                                <TextBlock Text="Snabbskanning" FontWeight="SemiBold" Margin="0,10,0,4" />
+                                <TextBlock Text="Platser där malware brukar hamna, som Hämtade filer och Autostart." Style="{StaticResource SubtleText}" FontSize="12" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource TileButton}" Command="{Binding FullScanCommand}">
+                            <StackPanel>
+                                <TextBlock Text="&#xEDA2;" FontFamily="{StaticResource IconFont}" FontSize="22" Foreground="{StaticResource AccentBrush}" />
+                                <TextBlock Text="Fullständig skanning" FontWeight="SemiBold" Margin="0,10,0,4" />
+                                <TextBlock Text="Alla filer på alla hårddiskar. Kan ta lång tid." Style="{StaticResource SubtleText}" FontSize="12" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource TileButton}" Command="{Binding CustomScanCommand}">
+                            <StackPanel>
+                                <TextBlock Text="&#xE8B7;" FontFamily="{StaticResource IconFont}" FontSize="22" Foreground="{StaticResource AccentBrush}" />
+                                <TextBlock Text="Anpassad skanning" FontWeight="SemiBold" Margin="0,10,0,4" />
+                                <TextBlock Text="Välj själv vilka mappar som ska skannas." Style="{StaticResource SubtleText}" FontSize="12" />
+                            </StackPanel>
+                        </Button>
+                    </WrapPanel>
+
+                    <TextBlock Text="Skydd" Style="{StaticResource SectionTitle}" />
+                    <Border Style="{StaticResource Card}">
+                        <StackPanel>
+                            <TextBlock Text="Signaturer" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding SignatureText}" Style="{StaticResource SubtleText}" Margin="0,4,0,12" />
+                            <TextBlock Text="Karantän" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding QuarantineText}" Style="{StaticResource SubtleText}" Margin="0,4,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Level}" Value="Warning">
+                    <Setter TargetName="Shield" Property="Fill" Value="{StaticResource WarningBrush}" />
+                    <Setter TargetName="ShieldIcon" Property="Text" Value="&#xE7BA;" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Level}" Value="Alert">
+                    <Setter TargetName="Shield" Property="Fill" Value="{StaticResource DangerBrush}" />
+                    <Setter TargetName="ShieldIcon" Property="Text" Value="&#xE711;" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- Scan -->
+        <DataTemplate DataType="{x:Type vm:ScanViewModel}">
+            <Grid Margin="36,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="{Binding ScanTitle}" Style="{StaticResource PageTitle}" />
+
+                <Border Grid.Row="1" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding StatusText}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <Button Grid.Column="1" Content="Avbryt" Command="{Binding CancelCommand}" Margin="16,0,0,0"
+                                    Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}" />
+                        </Grid>
+                        <ProgressBar IsIndeterminate="{Binding IsScanning}" Height="4" Margin="0,14,0,14"
+                                     Foreground="{StaticResource AccentBrush}" Background="#E5E5E5" BorderThickness="0"
+                                     Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}" />
+                        <WrapPanel Margin="0,8,0,0">
+                            <TextBlock Style="{StaticResource SubtleText}" Margin="0,0,24,0">
+                                <Run Text="Skannade filer:" />
+                                <Run Text="{Binding FilesScanned, Mode=OneWay, StringFormat={}{0:N0}}" Foreground="{StaticResource TextBrush}" />
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource SubtleText}" Margin="0,0,24,0">
+                                <Run Text="Hot:" />
+                                <Run Text="{Binding ThreatsFound, Mode=OneWay}" Foreground="{StaticResource TextBrush}" />
+                            </TextBlock>
+                            <TextBlock Style="{StaticResource SubtleText}">
+                                <Run Text="Tid:" />
+                                <Run Text="{Binding Elapsed, Mode=OneWay}" Foreground="{StaticResource TextBrush}" />
+                            </TextBlock>
+                        </WrapPanel>
+                        <TextBlock Text="{Binding CurrentFile}" Style="{StaticResource SubtleText}" FontSize="12" Margin="0,8,0,0"
+                                   TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                                   Visibility="{Binding IsScanning, Converter={StaticResource BoolToVisibility}}" />
+                    </StackPanel>
+                </Border>
+
+                <DataGrid Grid.Row="2" Margin="0,20,0,0" ItemsSource="{Binding Detections}"
+                          Visibility="{Binding HasResults, Converter={StaticResource BoolToVisibility}}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="40">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Visibility="{Binding IsHandled, Converter={StaticResource InverseBoolToVisibility}}"
+                                              HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Hot" Binding="{Binding ThreatName, Mode=OneWay}" Width="200" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Fil" Binding="{Binding FilePath, Mode=OneWay}" Width="*" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status, Mode=OneWay}" Width="180" IsReadOnly="True" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0"
+                            Visibility="{Binding HasResults, Converter={StaticResource BoolToVisibility}}">
+                    <Button Content="Flytta markerade till karantän" Style="{StaticResource AccentButton}"
+                            Command="{Binding QuarantineSelectedCommand}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Quarantine -->
+        <DataTemplate DataType="{x:Type vm:QuarantineViewModel}">
+            <Grid Margin="36,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Karantän" Style="{StaticResource PageTitle}" />
+                <StackPanel Grid.Row="1" Margin="0,0,0,16">
+                    <TextBlock Text="Filer i karantän är oskadliggjorda och kan inte köras. Du kan återställa en fil om den hamnat här av misstag, eller radera den för gott."
+                               Style="{StaticResource SubtleText}" />
+                    <TextBlock Text="{Binding ErrorText}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                </StackPanel>
+
+                <DataGrid Grid.Row="2" ItemsSource="{Binding Entries}" SelectedItem="{Binding SelectedEntry, Mode=TwoWay}" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Hot" Binding="{Binding ThreatName}" Width="200" />
+                        <DataGridTextColumn Header="Ursprunglig plats" Binding="{Binding OriginalPath}" Width="*" />
+                        <DataGridTextColumn Header="Datum" Binding="{Binding QuarantinedAt, StringFormat={}{0:yyyy-MM-dd HH:mm}}" Width="140" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock Grid.Row="2" Text="Karantänen är tom." Style="{StaticResource SubtleText}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVisibility}}" />
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,16,0,0">
+                    <Button Content="Återställ" Command="{Binding RestoreCommand}" Margin="0,0,8,0" />
+                    <Button Content="Radera för gott" Command="{Binding DeleteCommand}" />
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <DockPanel Background="{StaticResource NavBrush}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="20,22,20,24">
+                <Image Source="Assets/Logo.png" Width="28" Height="28" />
+                <TextBlock Text="Mattes Antivirus" FontSize="16" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center" />
+            </StackPanel>
+            <ListBox ItemsSource="{Binding Pages}" SelectedItem="{Binding CurrentPage, Mode=TwoWay}"
+                     ItemContainerStyle="{StaticResource NavItem}"
+                     Background="Transparent" BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Glyph}" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding Title}" Margin="14,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Focusable="False" />
+    </Grid>
+</Window>

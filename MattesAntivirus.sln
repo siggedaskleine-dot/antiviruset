@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DB9924EC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattesAntivirus.Core.Tests", "tests\MattesAntivirus.Core.Tests\MattesAntivirus.Core.Tests.csproj", "{9F03ADCC-58AE-4E4D-95B3-5802A7CF7E6E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattesAntivirus.App", "src\MattesAntivirus.App\MattesAntivirus.App.csproj", "{95B7733B-C08D-43F9-8722-21B7158B276A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +36,15 @@ Global
 		{9F03ADCC-58AE-4E4D-95B3-5802A7CF7E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F03ADCC-58AE-4E4D-95B3-5802A7CF7E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F03ADCC-58AE-4E4D-95B3-5802A7CF7E6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B7733B-C08D-43F9-8722-21B7158B276A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B7733B-C08D-43F9-8722-21B7158B276A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B7733B-C08D-43F9-8722-21B7158B276A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B7733B-C08D-43F9-8722-21B7158B276A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4E523162-8872-4911-9E5F-AC6B07EF6FD1} = {1FB54F17-8584-4692-96C6-A86AA67463E4}
 		{870C384E-C57E-4901-99AA-A73A995179EC} = {1FB54F17-8584-4692-96C6-A86AA67463E4}
 		{9F03ADCC-58AE-4E4D-95B3-5802A7CF7E6E} = {DB9924EC-9693-4D13-944B-91C5AB2A6E27}
+		{95B7733B-C08D-43F9-8722-21B7158B276A} = {1FB54F17-8584-4692-96C6-A86AA67463E4}
 	EndGlobalSection
 EndGlobal
